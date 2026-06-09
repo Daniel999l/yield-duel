@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Yield Duel
 
-## Getting Started
+Human vs AI RWA treasury benchmark on Mantle Sepolia testnet.
 
-First, run the development server:
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js, neobrutalism UI |
+| Wallet | RainbowKit + wagmi (MetaMask / injected) |
+| Chain | Mantle Sepolia (testnet) |
+| Contract | YieldDuelLog.sol |
+| Agent reasoning | Groq |
+| Database | MongoDB |
+
+## Quick Start
 
 ```bash
+npm install
+cp env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy on Mantle Sepolia (testnet)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Set up `.env.local`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+DEPLOYER_PRIVATE_KEY=your_deployer_wallet_private_key
+```
 
-## Learn More
+Fund that wallet with testnet MNT from a Mantle Sepolia faucet.
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Deploy the contract
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run compile
+npm run deploy:mantle
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Copy the printed address into `.env.local`:
 
-## Deploy on Vercel
+```
+NEXT_PUBLIC_YIELD_DUEL_CONTRACT=0xYourDeployedAddress
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Restart `npm run dev`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3. Play a live duel
+
+1. Open http://localhost:3000
+2. Click **Connect Wallet** (MetaMask or browser wallet)
+3. Switch to **Mantle Sepolia** in your wallet
+4. Set allocation sliders
+5. Click **Commit Duel On-Chain**
+6. Confirm the transaction
+7. View the real tx on [Mantle Sepolia Explorer](https://sepolia.mantlescan.xyz)
+
+### Optional: verify contract
+
+After deploy, with an [Etherscan API key](https://etherscan.io/myapikey) in `.env.local`:
+
+```bash
+npx hardhat verify --network mantleSepolia <CONTRACT_ADDRESS>
+```
+
+The same Etherscan key works for Mantle Sepolia (chain ID 5003) via Etherscan V2 API.
+
+## Wallet connect
+
+No WalletConnect Cloud signup needed. The app uses RainbowKit with injected browser wallets (MetaMask, etc.) only.
+
+## Groq + MongoDB (optional)
+
+Add to `.env.local` when ready:
+
+```
+GROQ_API_KEY=your_groq_key
+MONGODB_URI=mongodb+srv://...
+MONGODB_DB_NAME=yield-duel
+```
+
+- **Groq:** TreasuryClaw reasoning bullets after each duel
+- **MongoDB:** stores every duel, powers the live leaderboard
+
+Without these keys the app still runs. Groq falls back to rule-based reasoning. MongoDB falls back to demo leaderboard data.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start local app |
+| `npm run compile` | Compile Solidity contracts |
+| `npm run deploy:mantle` | Deploy to Mantle Sepolia testnet |
+| `npm run build` | Production build |
+
+## License
+
+MIT
