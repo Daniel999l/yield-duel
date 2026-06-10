@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { redistributeAllocation } from "@/lib/allocation";
 import type { Allocation, DuelRound, OnChainLogEntry } from "@/lib/types";
 
 interface DuelState {
@@ -35,17 +36,8 @@ export const useDuelStore = create<DuelState>()(
       lastRound: null,
 
       setAllocation: (asset, value) => {
-        const current = { ...get().humanAllocation, [asset]: value };
-        const others = (["USDY", "METH", "MNT"] as const).filter((a) => a !== asset);
-        const remaining = 100 - value;
-        const split = Math.floor(remaining / 2);
-        const extra = remaining - split * 2;
         set({
-          humanAllocation: {
-            ...current,
-            [others[0]]: split + extra,
-            [others[1]]: split,
-          },
+          humanAllocation: redistributeAllocation(get().humanAllocation, asset, value),
         });
       },
 

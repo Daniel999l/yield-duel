@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Yield Duel">
+  <rect x="1.5" y="1.5" width="29" height="29" rx="5" fill="#FDC800" stroke="#1C293C" stroke-width="3"/>
+  <g stroke="#1C293C" stroke-width="2.75" stroke-linecap="round" fill="#1C293C">
+    <path d="M9 23 L16 9" fill="none"/>
+    <path d="M23 23 L16 9" fill="none"/>
+    <rect x="7.5" y="20.5" width="5" height="3" rx="0.5" transform="rotate(-58 10 22)"/>
+    <rect x="19.5" y="20.5" width="5" height="3" rx="0.5" transform="rotate(58 22 22)"/>
+    <circle cx="16" cy="9" r="2"/>
+  </g>
+</svg>
